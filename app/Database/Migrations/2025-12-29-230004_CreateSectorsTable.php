@@ -42,6 +42,12 @@ class CreateSectorsTable extends Migration
                 'constraint' => 11,
                 'default'    => 0,
             ],
+            'is_numbered' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 1,
+                'comment'    => '1 = assentos numerados, 0 = pista/área geral',
+            ],
             'position_x' => [
                 'type'       => 'INT',
                 'constraint' => 11,

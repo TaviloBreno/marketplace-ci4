@@ -12,45 +12,56 @@ class Event extends Entity
         'id'                       => 'integer',
         'user_id'                  => 'integer',
         'is_featured'              => 'boolean',
-        'has_seat_map'             => 'boolean',
         'max_tickets_per_purchase' => 'integer',
     ];
 
-    // Relacionamentos carregados
-    protected $organizer;
-    protected $days;
-    protected $sectors;
-
     /**
-     * Gera o slug a partir do título
+     * Gera o slug automaticamente a partir do título
      */
     public function setTitle(string $title): self
     {
         $this->attributes['title'] = $title;
         $this->attributes['slug']  = url_title($title, '-', true);
+        
         return $this;
     }
 
     /**
-     * Retorna a URL da imagem
+     * Retorna a URL completa da imagem
      */
-    public function getImageUrl(): string
+    public function getImageUrl(): ?string
     {
         if (empty($this->attributes['image'])) {
             return base_url('assets/images/event-placeholder.jpg');
         }
+        
         return base_url('uploads/events/' . $this->attributes['image']);
     }
 
     /**
-     * Retorna a URL do banner
+     * Retorna a URL completa do banner
      */
-    public function getBannerUrl(): string
+    public function getBannerUrl(): ?string
     {
         if (empty($this->attributes['banner'])) {
-            return base_url('assets/images/banner-placeholder.jpg');
+            return $this->getImageUrl();
         }
+        
         return base_url('uploads/events/' . $this->attributes['banner']);
+    }
+
+    /**
+     * Retorna o endereço completo do local
+     */
+    public function getFullAddress(): string
+    {
+        return sprintf(
+            '%s, %s - %s, %s',
+            $this->attributes['venue_address'],
+            $this->attributes['venue_city'],
+            $this->attributes['venue_state'],
+            $this->attributes['venue_zip_code']
+        );
     }
 
     /**
@@ -62,65 +73,40 @@ class Event extends Entity
     }
 
     /**
-     * Verifica se o evento está cancelado
+     * Verifica se o evento pode ser editado
      */
-    public function isCancelled(): bool
+    public function canEdit(): bool
     {
-        return $this->attributes['status'] === 'cancelled';
+        return in_array($this->attributes['status'], ['draft', 'published']);
     }
 
     /**
-     * Retorna o endereço completo do local
+     * Retorna o label do status
      */
-    public function getFullAddress(): string
+    public function getStatusLabel(): string
     {
-        return sprintf(
-            '%s - %s, %s - %s',
-            $this->attributes['venue_address'],
-            $this->attributes['venue_city'],
-            $this->attributes['venue_state'],
-            $this->attributes['venue_zipcode']
-        );
-    }
-
-    /**
-     * Retorna as categorias disponíveis
-     */
-    public static function getCategories(): array
-    {
-        return [
-            'show'       => 'Show/Concerto',
-            'theater'    => 'Teatro',
-            'sports'     => 'Esportes',
-            'festival'   => 'Festival',
-            'conference' => 'Conferência',
-            'workshop'   => 'Workshop',
-            'party'      => 'Festa',
-            'exhibition' => 'Exposição',
-            'other'      => 'Outros',
+        $labels = [
+            'draft'     => 'Rascunho',
+            'published' => 'Publicado',
+            'cancelled' => 'Cancelado',
+            'finished'  => 'Finalizado',
         ];
+
+        return $labels[$this->attributes['status']] ?? $this->attributes['status'];
     }
 
     /**
-     * Retorna o nome da categoria
+     * Retorna a classe CSS do status
      */
-    public function getCategoryName(): string
+    public function getStatusClass(): string
     {
-        $categories = self::getCategories();
-        return $categories[$this->attributes['category']] ?? $this->attributes['category'];
-    }
-
-    /**
-     * Retorna o badge de status
-     */
-    public function getStatusBadge(): string
-    {
-        $badges = [
-            'draft'     => '<span class="badge bg-secondary">Rascunho</span>',
-            'published' => '<span class="badge bg-success">Publicado</span>',
-            'cancelled' => '<span class="badge bg-danger">Cancelado</span>',
-            'finished'  => '<span class="badge bg-dark">Finalizado</span>',
+        $classes = [
+            'draft'     => 'secondary',
+            'published' => 'success',
+            'cancelled' => 'danger',
+            'finished'  => 'info',
         ];
-        return $badges[$this->attributes['status']] ?? '';
+
+        return $classes[$this->attributes['status']] ?? 'secondary';
     }
 }

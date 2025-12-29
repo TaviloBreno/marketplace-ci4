@@ -47,7 +47,8 @@ class CreateEventsTable extends Migration
                 'constraint' => 255,
             ],
             'venue_address' => [
-                'type' => 'TEXT',
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
             ],
             'venue_city' => [
                 'type'       => 'VARCHAR',
@@ -57,7 +58,7 @@ class CreateEventsTable extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 2,
             ],
-            'venue_zipcode' => [
+            'venue_zip_code' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 10,
             ],
@@ -71,11 +72,6 @@ class CreateEventsTable extends Migration
                 'default'    => 'draft',
             ],
             'is_featured' => [
-                'type'       => 'TINYINT',
-                'constraint' => 1,
-                'default'    => 0,
-            ],
-            'has_seat_map' => [
                 'type'       => 'TINYINT',
                 'constraint' => 1,
                 'default'    => 0,
@@ -100,10 +96,8 @@ class CreateEventsTable extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addKey('slug', false, true);
         $this->forge->addKey('user_id');
-        $this->forge->addKey('status');
-        $this->forge->addKey('category');
+        $this->forge->addUniqueKey('slug');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('events');
     }

@@ -15,23 +15,20 @@ class CreateSeatsTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'row_id' => [
+            'queue_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'sector_id' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
-            ],
-            'seat_number' => [
+            'number' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 10,
             ],
-            'seat_label' => [
+            'label' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
+                'null'       => true,
+                'comment'    => 'Ex: A-12, VIP-1',
             ],
             'position_x' => [
                 'type'       => 'INT',
@@ -45,23 +42,19 @@ class CreateSeatsTable extends Migration
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['available', 'blocked', 'reserved', 'sold'],
+                'constraint' => ['available', 'blocked', 'maintenance'],
                 'default'    => 'available',
             ],
-            'is_wheelchair' => [
+            'is_accessible' => [
                 'type'       => 'TINYINT',
                 'constraint' => 1,
                 'default'    => 0,
+                'comment'    => 'Assento para PCD',
             ],
-            'is_companion' => [
-                'type'       => 'TINYINT',
-                'constraint' => 1,
+            'sort_order' => [
+                'type'       => 'INT',
+                'constraint' => 11,
                 'default'    => 0,
-            ],
-            'price_override' => [
-                'type'       => 'DECIMAL',
-                'constraint' => '10,2',
-                'null'       => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -74,11 +67,8 @@ class CreateSeatsTable extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addKey('row_id');
-        $this->forge->addKey('sector_id');
-        $this->forge->addKey('status');
-        $this->forge->addForeignKey('row_id', 'rows', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('sector_id', 'sectors', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addKey('queue_id');
+        $this->forge->addForeignKey('queue_id', 'queues', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('seats');
     }
 

@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateRowsTable extends Migration
+class CreateQueuesTable extends Migration
 {
     public function up()
     {
@@ -23,20 +23,38 @@ class CreateRowsTable extends Migration
             'name' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 10,
+                'comment'    => 'Ex: A, B, C ou 1, 2, 3',
             ],
-            'seats_count' => [
+            'total_seats' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'default'    => 0,
             ],
-            'row_number' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-            ],
-            'curve_offset' => [
+            'position_x' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'default'    => 0,
+            ],
+            'position_y' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'default'    => 0,
+            ],
+            'curve_angle' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'default'    => 0,
+                'comment'    => 'Ângulo da curva em graus (0 = reta)',
+            ],
+            'sort_order' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'default'    => 0,
+            ],
+            'is_active' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 1,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -51,11 +69,11 @@ class CreateRowsTable extends Migration
         $this->forge->addKey('id', true);
         $this->forge->addKey('sector_id');
         $this->forge->addForeignKey('sector_id', 'sectors', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('rows');
+        $this->forge->createTable('queues');
     }
 
     public function down()
     {
-        $this->forge->dropTable('rows');
+        $this->forge->dropTable('queues');
     }
 }

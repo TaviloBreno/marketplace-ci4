@@ -31,11 +31,11 @@ class CreateSeatBookingsTable extends Migration
                 'unsigned'   => true,
                 'null'       => true,
             ],
-            'order_id' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
+            'session_id' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
                 'null'       => true,
+                'comment'    => 'Para reservas temporárias de usuários não logados',
             ],
             'status' => [
                 'type'       => 'ENUM',
@@ -48,6 +48,7 @@ class CreateSeatBookingsTable extends Migration
             ],
             'reserved_at' => [
                 'type' => 'DATETIME',
+                'null' => true,
             ],
             'expires_at' => [
                 'type' => 'DATETIME',
@@ -57,7 +58,7 @@ class CreateSeatBookingsTable extends Migration
                 'type' => 'DATETIME',
                 'null' => true,
             ],
-            'session_id' => [
+            'payment_intent_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'       => true,
@@ -76,9 +77,7 @@ class CreateSeatBookingsTable extends Migration
         $this->forge->addKey('seat_id');
         $this->forge->addKey('event_day_id');
         $this->forge->addKey('user_id');
-        $this->forge->addKey('order_id');
-        $this->forge->addKey('status');
-        $this->forge->addKey('session_id');
+        $this->forge->addKey(['seat_id', 'event_day_id']);
         $this->forge->addForeignKey('seat_id', 'seats', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('event_day_id', 'event_days', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'SET NULL', 'CASCADE');

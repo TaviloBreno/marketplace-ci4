@@ -30,7 +30,7 @@ class CreateEventDaysTable extends Migration
                 'type' => 'TIME',
                 'null' => true,
             ],
-            'doors_open_time' => [
+            'doors_open' => [
                 'type' => 'TIME',
                 'null' => true,
             ],
@@ -51,7 +51,6 @@ class CreateEventDaysTable extends Migration
 
         $this->forge->addKey('id', true);
         $this->forge->addKey('event_id');
-        $this->forge->addKey('date');
         $this->forge->addForeignKey('event_id', 'events', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('event_days');
     }

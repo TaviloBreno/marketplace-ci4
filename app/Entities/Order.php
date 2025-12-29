@@ -7,7 +7,7 @@ use CodeIgniter\Entity\Entity;
 class Order extends Entity
 {
     protected $datamap = [];
-    protected $dates   = ['paid_at', 'cancelled_at', 'refunded_at', 'created_at', 'updated_at'];
+    protected $dates   = ['paid_at', 'cancelled_at', 'created_at', 'updated_at'];
     protected $casts   = [
         'id'           => 'integer',
         'user_id'      => 'integer',
@@ -24,7 +24,7 @@ class Order extends Entity
      */
     public static function generateOrderNumber(): string
     {
-        return strtoupper(date('Ymd') . '-' . bin2hex(random_bytes(4)));
+        return 'ORD-' . strtoupper(bin2hex(random_bytes(8)));
     }
 
     /**
@@ -60,21 +60,6 @@ class Order extends Entity
     }
 
     /**
-     * Retorna o badge de status
-     */
-    public function getStatusBadge(): string
-    {
-        $badges = [
-            'pending'    => '<span class="badge bg-warning">Pendente</span>',
-            'processing' => '<span class="badge bg-info">Processando</span>',
-            'paid'       => '<span class="badge bg-success">Pago</span>',
-            'cancelled'  => '<span class="badge bg-danger">Cancelado</span>',
-            'refunded'   => '<span class="badge bg-secondary">Reembolsado</span>',
-        ];
-        return $badges[$this->attributes['status']] ?? '';
-    }
-
-    /**
      * Verifica se o pedido está pago
      */
     public function isPaid(): bool
@@ -83,18 +68,34 @@ class Order extends Entity
     }
 
     /**
-     * Verifica se pode ser cancelado
+     * Retorna o label do status
      */
-    public function canBeCancelled(): bool
+    public function getStatusLabel(): string
     {
-        return in_array($this->attributes['status'], ['pending', 'processing']);
+        $labels = [
+            'pending'    => 'Pendente',
+            'processing' => 'Processando',
+            'paid'       => 'Pago',
+            'cancelled'  => 'Cancelado',
+            'refunded'   => 'Reembolsado',
+        ];
+
+        return $labels[$this->attributes['status']] ?? $this->attributes['status'];
     }
 
     /**
-     * Verifica se pode ser reembolsado
+     * Retorna a classe CSS do status
      */
-    public function canBeRefunded(): bool
+    public function getStatusClass(): string
     {
-        return $this->attributes['status'] === 'paid';
+        $classes = [
+            'pending'    => 'warning',
+            'processing' => 'info',
+            'paid'       => 'success',
+            'cancelled'  => 'danger',
+            'refunded'   => 'secondary',
+        ];
+
+        return $classes[$this->attributes['status']] ?? 'secondary';
     }
 }

@@ -62,14 +62,32 @@ class CreateOrdersTable extends Migration
                 'constraint' => 50,
                 'null'       => true,
             ],
-            'stripe_payment_intent_id' => [
+            'payment_intent_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'       => true,
             ],
-            'stripe_charge_id' => [
+            'stripe_transfer_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
+                'null'       => true,
+            ],
+            'customer_name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'customer_email' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'customer_document' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
+                'null'       => true,
+            ],
+            'customer_phone' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
                 'null'       => true,
             ],
             'paid_at' => [
@@ -78,14 +96,6 @@ class CreateOrdersTable extends Migration
             ],
             'cancelled_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
-            ],
-            'refunded_at' => [
-                'type' => 'DATETIME',
-                'null' => true,
-            ],
-            'notes' => [
-                'type' => 'TEXT',
                 'null' => true,
             ],
             'created_at' => [
@@ -99,11 +109,9 @@ class CreateOrdersTable extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addKey('order_number', false, true);
         $this->forge->addKey('user_id');
         $this->forge->addKey('event_id');
-        $this->forge->addKey('event_day_id');
-        $this->forge->addKey('status');
+        $this->forge->addUniqueKey('order_number');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('event_id', 'events', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('event_day_id', 'event_days', 'id', 'CASCADE', 'CASCADE');

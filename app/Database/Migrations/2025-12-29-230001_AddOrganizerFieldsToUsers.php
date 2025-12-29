@@ -27,19 +27,13 @@ class AddOrganizerFieldsToUsers extends Migration
                 'default'    => 'pending',
                 'after'      => 'stripe_account_id',
             ],
-            'stripe_onboarding_complete' => [
-                'type'       => 'TINYINT',
-                'constraint' => 1,
-                'default'    => 0,
-                'after'      => 'stripe_account_status',
-            ],
             'company_name' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'       => true,
-                'after'      => 'stripe_onboarding_complete',
+                'after'      => 'stripe_account_status',
             ],
-            'company_document' => [
+            'document' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
                 'null'       => true,
@@ -49,18 +43,33 @@ class AddOrganizerFieldsToUsers extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
                 'null'       => true,
-                'after'      => 'company_document',
+                'after'      => 'document',
             ],
             'address' => [
-                'type'       => 'TEXT',
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
                 'null'       => true,
                 'after'      => 'phone',
             ],
+            'city' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 100,
+                'null'       => true,
+                'after'      => 'address',
+            ],
+            'state' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 2,
+                'null'       => true,
+                'after'      => 'city',
+            ],
+            'zip_code' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
+                'null'       => true,
+                'after'      => 'state',
+            ],
         ]);
-
-        // Índices
-        $this->forge->addKey('is_organizer', false, false, 'idx_is_organizer');
-        $this->forge->addKey('stripe_account_id', false, false, 'idx_stripe_account_id');
     }
 
     public function down()
@@ -69,11 +78,13 @@ class AddOrganizerFieldsToUsers extends Migration
             'is_organizer',
             'stripe_account_id',
             'stripe_account_status',
-            'stripe_onboarding_complete',
             'company_name',
-            'company_document',
+            'document',
             'phone',
             'address',
+            'city',
+            'state',
+            'zip_code',
         ]);
     }
 }

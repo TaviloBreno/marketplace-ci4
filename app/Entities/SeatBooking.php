@@ -12,28 +12,28 @@ class SeatBooking extends Entity
         'id'           => 'integer',
         'seat_id'      => 'integer',
         'event_day_id' => 'integer',
-        'user_id'      => '?integer',
-        'order_id'     => '?integer',
+        'user_id'      => 'integer',
         'price'        => 'float',
     ];
 
     /**
-     * Verifica se a reserva expirou
+     * Verifica se a reserva está expirada
      */
     public function isExpired(): bool
     {
+        if ($this->attributes['status'] !== 'reserved') {
+            return false;
+        }
+
         if (empty($this->attributes['expires_at'])) {
             return false;
         }
-        
-        $expiresAt = new \DateTime($this->attributes['expires_at']);
-        $now = new \DateTime();
-        
-        return $now > $expiresAt;
+
+        return strtotime($this->attributes['expires_at']) < time();
     }
 
     /**
-     * Verifica se está confirmado
+     * Verifica se a reserva está confirmada
      */
     public function isConfirmed(): bool
     {
@@ -41,45 +41,16 @@ class SeatBooking extends Entity
     }
 
     /**
-     * Verifica se está reservado
+     * Retorna o tempo restante da reserva em minutos
      */
-    public function isReserved(): bool
-    {
-        return $this->attributes['status'] === 'reserved';
-    }
-
-    /**
-     * Retorna o tempo restante da reserva
-     */
-    public function getTimeRemaining(): ?int
+    public function getRemainingMinutes(): int
     {
         if (empty($this->attributes['expires_at'])) {
-            return null;
+            return 0;
         }
-        
-        $expiresAt = new \DateTime($this->attributes['expires_at']);
-        $now = new \DateTime();
-        
-        $diff = $expiresAt->getTimestamp() - $now->getTimestamp();
-        
-        return max(0, $diff);
-    }
 
-    /**
-     * Retorna o tempo restante formatado
-     */
-    public function getFormattedTimeRemaining(): string
-    {
-        $seconds = $this->getTimeRemaining();
-        
-        if ($seconds === null || $seconds <= 0) {
-            return 'Expirado';
-        }
-        
-        $minutes = floor($seconds / 60);
-        $remainingSeconds = $seconds % 60;
-        
-        return sprintf('%02d:%02d', $minutes, $remainingSeconds);
+        $remaining = strtotime($this->attributes['expires_at']) - time();
+        return max(0, ceil($remaining / 60));
     }
 
     /**
@@ -88,5 +59,20 @@ class SeatBooking extends Entity
     public function getFormattedPrice(): string
     {
         return 'R$ ' . number_format($this->attributes['price'], 2, ',', '.');
+    }
+
+    /**
+     * Retorna o label do status
+     */
+    public function getStatusLabel(): string
+    {
+        $labels = [
+            'reserved'  => 'Reservado',
+            'confirmed' => 'Confirmado',
+            'cancelled' => 'Cancelado',
+            'expired'   => 'Expirado',
+        ];
+
+        return $labels[$this->attributes['status']] ?? $this->attributes['status'];
     }
 }

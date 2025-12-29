@@ -43,48 +43,21 @@ class EventDay extends Entity
     }
 
     /**
-     * Retorna o horário de abertura dos portões formatado
+     * Retorna a abertura dos portões formatada
      */
-    public function getFormattedDoorsOpenTime(): ?string
+    public function getFormattedDoorsOpen(): ?string
     {
-        if (empty($this->attributes['doors_open_time'])) {
+        if (empty($this->attributes['doors_open'])) {
             return null;
         }
-        return substr($this->attributes['doors_open_time'], 0, 5);
+        return substr($this->attributes['doors_open'], 0, 5);
     }
 
     /**
-     * Retorna data e hora completa formatada
+     * Retorna data e hora formatados
      */
-    public function getFullDateTime(): string
+    public function getDateTimeLabel(): string
     {
-        $date = new \DateTime($this->attributes['date']);
-        $formatted = $date->format('d/m/Y') . ' às ' . $this->getFormattedStartTime();
-        
-        if ($endTime = $this->getFormattedEndTime()) {
-            $formatted .= ' - ' . $endTime;
-        }
-        
-        return $formatted;
-    }
-
-    /**
-     * Verifica se o dia já passou
-     */
-    public function isPast(): bool
-    {
-        $eventDate = new \DateTime($this->attributes['date'] . ' ' . $this->attributes['start_time']);
-        $now = new \DateTime();
-        return $eventDate < $now;
-    }
-
-    /**
-     * Verifica se é hoje
-     */
-    public function isToday(): bool
-    {
-        $eventDate = new \DateTime($this->attributes['date']);
-        $today = new \DateTime('today');
-        return $eventDate->format('Y-m-d') === $today->format('Y-m-d');
+        return $this->getFormattedDate() . ' às ' . $this->getFormattedStartTime();
     }
 }

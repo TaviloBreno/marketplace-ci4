@@ -107,15 +107,41 @@ class OrderModel extends Model
     {
         $builder = $this->db->table('orders o');
         $builder->select('
-            COUNT(*) as total_orders,
+            COUNT(DISTINCT o.id) as total_orders,
             SUM(CASE WHEN o.status = "paid" THEN 1 ELSE 0 END) as paid_orders,
             SUM(CASE WHEN o.status = "paid" THEN o.total ELSE 0 END) as total_revenue,
-            SUM(CASE WHEN o.status = "paid" AND DATE(o.paid_at) = CURDATE() THEN o.total ELSE 0 END) as today_revenue
+            SUM(CASE WHEN o.status = "paid" AND DATE(o.paid_at) = CURDATE() THEN o.total ELSE 0 END) as today_revenue,
+            (SELECT COUNT(*) FROM tickets t 
+             INNER JOIN orders o2 ON o2.id = t.order_id 
+             INNER JOIN events e2 ON e2.id = o2.event_id 
+             WHERE e2.user_id = e.user_id AND o2.status = "paid") as tickets_sold,
+            (SELECT COUNT(DISTINCT e3.id) FROM events e3 WHERE e3.user_id = e.user_id AND e3.status = "published") as active_events
         ');
         $builder->join('events e', 'e.id = o.event_id');
         $builder->where('e.user_id', $userId);
 
-        return $builder->get()->getRowArray();
+        $result = $builder->get()->getRowArray();
+        
+        // Se não houver pedidos, ainda assim precisamos das estatísticas de eventos
+        if (empty($result['total_orders'])) {
+            $eventBuilder = $this->db->table('events');
+            $eventBuilder->select('
+                COUNT(CASE WHEN status = "published" THEN 1 END) as active_events
+            ');
+            $eventBuilder->where('user_id', $userId);
+            $eventResult = $eventBuilder->get()->getRowArray();
+            
+            return [
+                'total_orders'   => 0,
+                'paid_orders'    => 0,
+                'total_revenue'  => 0,
+                'today_revenue'  => 0,
+                'tickets_sold'   => 0,
+                'active_events'  => $eventResult['active_events'] ?? 0,
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -125,9 +151,11 @@ class OrderModel extends Model
     {
         $builder = $this->db->table('orders o');
         $builder->select('
-            COUNT(*) as total_orders,
+            COUNT(DISTINCT o.id) as total_orders,
             SUM(CASE WHEN o.status = "paid" THEN 1 ELSE 0 END) as paid_orders,
-            SUM(CASE WHEN o.status = "paid" THEN o.total ELSE 0 END) as total_revenue
+            SUM(CASE WHEN o.status = "paid" THEN o.total ELSE 0 END) as total_revenue,
+            SUM(CASE WHEN o.status = "pending" OR o.status = "processing" THEN 1 ELSE 0 END) as pending_orders,
+            (SELECT COUNT(*) FROM tickets t INNER JOIN orders o2 ON o2.id = t.order_id WHERE o2.event_id = o.event_id AND o2.status = "paid") as tickets_sold
         ');
         $builder->where('o.event_id', $eventId);
 

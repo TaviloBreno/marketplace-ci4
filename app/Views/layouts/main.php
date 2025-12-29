@@ -77,24 +77,51 @@
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </li>
+                
+                <?php if (auth()->user()->is_organizer && auth()->user()->stripe_account_status === 'active'): ?>
+                <!-- Menu do Organizador -->
+                <li class="nav-item mt-3">
+                    <small class="text-uppercase text-muted px-3">Organizador</small>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= str_starts_with(uri_string(), 'organizer/dashboard') ? 'active' : '' ?>" href="<?= base_url('organizer/dashboard') ?>">
+                        <i class="bi bi-grid"></i> Painel Organizador
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= str_starts_with(uri_string(), 'organizer/events') ? 'active' : '' ?>" href="<?= base_url('organizer/events') ?>">
+                        <i class="bi bi-calendar-event"></i> Meus Eventos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('organizer/stripe-dashboard') ?>" target="_blank">
+                        <i class="bi bi-cash-stack"></i> Financeiro
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= uri_string() === 'organizer/account-status' ? 'active' : '' ?>" href="<?= base_url('organizer/account-status') ?>">
+                        <i class="bi bi-person-check"></i> Status da Conta
+                    </a>
+                </li>
+                <?php elseif (!auth()->user()->is_organizer): ?>
+                <li class="nav-item mt-3">
+                    <a class="nav-link text-warning" href="<?= base_url('organizer/become') ?>">
+                        <i class="bi bi-star"></i> Seja um Organizador
+                    </a>
+                </li>
+                <?php endif; ?>
+                
+                <li class="nav-item mt-3">
+                    <small class="text-uppercase text-muted px-3">Geral</small>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">
-                        <i class="bi bi-box-seam"></i> Produtos
+                        <i class="bi bi-ticket-perforated"></i> Meus Ingressos
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">
-                        <i class="bi bi-cart3"></i> Pedidos
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-people"></i> Clientes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-bar-chart"></i> Relatórios
+                        <i class="bi bi-cart3"></i> Meus Pedidos
                     </a>
                 </li>
                 <li class="nav-item">

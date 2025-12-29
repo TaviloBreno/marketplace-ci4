@@ -10,7 +10,7 @@
             <h1 class="h3 mb-1">Painel do Organizador</h1>
             <p class="text-muted mb-0">Gerencie seus eventos e acompanhe suas vendas</p>
         </div>
-        <a href="<?= url_to('events.create') ?>" class="btn btn-primary">
+        <a href="<?= base_url('organizer/events/create') ?>" class="btn btn-primary">
             <i class="bi bi-plus-lg me-1"></i> Novo Evento
         </a>
     </div>

@@ -2,7 +2,9 @@
 
 namespace Config;
 
+use App\Filters\AjaxCsrfFilter;
 use App\Filters\OrganizerFilter;
+use App\Filters\RateLimitFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -27,6 +29,8 @@ class Filters extends BaseFilters
      */
     public array $aliases = [
         'csrf'          => CSRF::class,
+        'ajaxcsrf'      => AjaxCsrfFilter::class,
+        'ratelimit'     => RateLimitFilter::class,
         'toolbar'       => DebugToolbar::class,
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
@@ -75,7 +79,7 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             // 'honeypot',
-            // 'csrf',
+            'csrf' => ['except' => ['api/*', 'carrinho/*', 'checkout/*']],
             // 'invalidchars',
         ],
         'after' => [
@@ -108,5 +112,8 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        'ajaxcsrf' => ['before' => ['carrinho/*', 'checkout/*']],
+        'ratelimit' => ['before' => ['carrinho/*', 'checkout/*', 'api/*']],
+    ];
 }

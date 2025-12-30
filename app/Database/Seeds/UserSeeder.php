@@ -11,9 +11,10 @@ class UserSeeder extends Seeder
     {
         // Obtém o provider de usuários do Shield
         $users = auth()->getProvider();
+        $db = \Config\Database::connect();
 
         // ==========================================
-        // Criar usuário Administrador
+        // Criar usuário Administrador/Organizador
         // ==========================================
         $existingAdmin = $users->findByCredentials(['email' => 'admin@marketplace.com']);
         
@@ -32,38 +33,69 @@ class UserSeeder extends Seeder
             // Adiciona ao grupo de administradores
             $admin->addGroup('superadmin');
 
-            echo "✓ Administrador criado: admin@marketplace.com / Admin@123\n";
+            // Tornar organizador
+            $db->table('users')->where('id', $admin->id)->update([
+                'is_organizer'          => 1,
+                'stripe_account_status' => 'active', // Simular conta ativa para testes
+                'company_name'          => 'Eventos Admin Ltda',
+                'document'              => '12.345.678/0001-90',
+                'phone'                 => '(11) 99999-9999',
+                'address'               => 'Rua dos Eventos, 123',
+                'city'                  => 'São Paulo',
+                'state'                 => 'SP',
+                'zip_code'              => '01310-100',
+            ]);
+
+            echo "✓ Administrador/Organizador criado: admin@marketplace.com / Admin@123\n";
         } else {
             echo "! Administrador já existe: admin@marketplace.com\n";
+            
+            // Garantir que é organizador
+            $db->table('users')->where('id', $existingAdmin->id)->update([
+                'is_organizer'          => 1,
+                'stripe_account_status' => 'active',
+                'company_name'          => 'Eventos Admin Ltda',
+                'document'              => '12.345.678/0001-90',
+                'phone'                 => '(11) 99999-9999',
+                'address'               => 'Rua dos Eventos, 123',
+                'city'                  => 'São Paulo',
+                'state'                 => 'SP',
+                'zip_code'              => '01310-100',
+            ]);
+            echo "  → Atualizado como organizador\n";
         }
 
         // ==========================================
-        // Criar usuário Funcionário
+        // Criar usuário Cliente
         // ==========================================
-        $existingFunc = $users->findByCredentials(['email' => 'funcionario@marketplace.com']);
+        $existingFunc = $users->findByCredentials(['email' => 'cliente@marketplace.com']);
         
         if ($existingFunc === null) {
-            $funcionario = new User([
-                'username' => 'funcionario',
-                'email'    => 'funcionario@marketplace.com',
-                'password' => 'Func@123',
+            $cliente = new User([
+                'username' => 'cliente',
+                'email'    => 'cliente@marketplace.com',
+                'password' => 'Cliente@123',
             ]);
 
-            $users->save($funcionario);
+            $users->save($cliente);
             
             // Busca o usuário salvo para obter o ID
-            $funcionario = $users->findById($users->getInsertID());
+            $cliente = $users->findById($users->getInsertID());
             
             // Adiciona ao grupo de usuários comuns
-            $funcionario->addGroup('user');
+            $cliente->addGroup('user');
 
-            echo "✓ Funcionário criado: funcionario@marketplace.com / Func@123\n";
+            echo "✓ Cliente criado: cliente@marketplace.com / Cliente@123\n";
         } else {
-            echo "! Funcionário já existe: funcionario@marketplace.com\n";
+            echo "! Cliente já existe: cliente@marketplace.com\n";
         }
 
         echo "\n========================================\n";
         echo "Processo concluído!\n";
+        echo "========================================\n";
+        echo "\nUsuários disponíveis:\n";
+        echo "  Organizador: admin@marketplace.com / Admin@123\n";
+        echo "  Cliente:     cliente@marketplace.com / Cliente@123\n";
         echo "========================================\n";
     }
 }

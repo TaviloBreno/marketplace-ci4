@@ -137,7 +137,7 @@
                                     <?php if ($nextDay): ?>
                                         <strong>Próxima data</strong><br>
                                         <small class="text-muted">
-                                            <?= date('d/m/Y', strtotime($nextDay->date)) ?> às <?= date('H:i', strtotime($nextDay->start_time)) ?>
+                                            <?= date('d/m/Y', strtotime($nextDay->event_date)) ?> às <?= date('H:i', strtotime($nextDay->start_time)) ?>
                                         </small>
                                     <?php else: ?>
                                         <strong>Sem próximas datas</strong><br>
@@ -177,7 +177,7 @@
                                 <tbody>
                                     <?php foreach ($days as $day): ?>
                                         <tr>
-                                            <td><?= date('d/m/Y', strtotime($day->date)) ?></td>
+                                            <td><?= date('d/m/Y', strtotime($day->event_date)) ?></td>
                                             <td><?= date('H:i', strtotime($day->start_time)) ?></td>
                                             <td><?= $day->doors_open ? date('H:i', strtotime($day->doors_open)) : '-' ?></td>
                                             <td>

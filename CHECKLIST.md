@@ -39,7 +39,12 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 
 ## 🟡 IMPORTANTE - Core do Sistema
 
-### 4. Testes Manuais Necessários
+### 4. Rotas e URLs ✅
+- [x] **Rotas em português**: `/eventos`, `/carrinho`, `/checkout`, `/meus-pedidos`, `/meus-ingressos`
+- [x] **URLs de API atualizadas**: `/carrinho/adicionar`, `/carrinho/remover`, `/carrinho/contador`
+- [x] **Campo `event_date`** corrigido em todos os models, entities e views
+
+### 5. Testes Manuais Necessários
 - [x] ~~Testar fluxo completo de registro de usuário~~ (Seeders criados)
 - [ ] Testar cadastro de organizador + onboarding Stripe
 - [x] ~~Testar criação de evento com dias, setores e assentos~~ (EventSeeder criado)

@@ -176,7 +176,7 @@
             <select class="form-select" id="daySelect" style="width: auto;">
                 <?php foreach ($days as $day): ?>
                     <option value="<?= $day->id ?>" <?= $selectedDay == $day->id ? 'selected' : '' ?>>
-                        <?= date('d/m/Y', strtotime($day->date)) ?> - <?= date('H:i', strtotime($day->start_time)) ?>
+                        <?= date('d/m/Y', strtotime($day->event_date)) ?> - <?= date('H:i', strtotime($day->start_time)) ?>
                     </option>
                 <?php endforeach; ?>
             </select>

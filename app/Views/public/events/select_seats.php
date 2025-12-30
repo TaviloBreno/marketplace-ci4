@@ -511,7 +511,7 @@ function addToCart() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adicionando...';
     
-    fetch('<?= base_url('api/cart/add') ?>', {
+    fetch('<?= base_url('carrinho/adicionar') ?>', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

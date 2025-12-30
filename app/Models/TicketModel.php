@@ -98,7 +98,7 @@ class TicketModel extends Model
     {
         $builder = $this->db->table('tickets t');
         $builder->select('t.*, o.event_id, o.event_day_id, e.title as event_title');
-        $builder->select('ed.date as event_date, ed.start_time');
+        $builder->select('ed.event_date, ed.start_time');
         $builder->select('s.number as seat_number, sec.name as sector_name');
         $builder->join('orders o', 'o.id = t.order_id');
         $builder->join('events e', 'e.id = o.event_id');

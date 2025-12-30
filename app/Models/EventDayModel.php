@@ -15,7 +15,7 @@ class EventDayModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'event_id',
-        'date',
+        'event_date',
         'start_time',
         'end_time',
         'doors_open',
@@ -34,7 +34,7 @@ class EventDayModel extends Model
     // Validation
     protected $validationRules = [
         'event_id'   => 'required|integer',
-        'date'       => 'required|valid_date',
+        'event_date' => 'required|valid_date',
         'start_time' => 'required',
     ];
 
@@ -46,7 +46,7 @@ class EventDayModel extends Model
     public function findByEvent(int $eventId)
     {
         return $this->where('event_id', $eventId)
-                    ->orderBy('date', 'ASC')
+                    ->orderBy('event_date', 'ASC')
                     ->orderBy('start_time', 'ASC')
                     ->findAll();
     }
@@ -58,8 +58,8 @@ class EventDayModel extends Model
     {
         return $this->where('event_id', $eventId)
                     ->where('is_active', 1)
-                    ->where('date >=', date('Y-m-d'))
-                    ->orderBy('date', 'ASC')
+                    ->where('event_date >=', date('Y-m-d'))
+                    ->orderBy('event_date', 'ASC')
                     ->orderBy('start_time', 'ASC')
                     ->findAll();
     }
@@ -71,8 +71,8 @@ class EventDayModel extends Model
     {
         return $this->where('event_id', $eventId)
                     ->where('is_active', 1)
-                    ->where('date >=', date('Y-m-d'))
-                    ->orderBy('date', 'ASC')
+                    ->where('event_date >=', date('Y-m-d'))
+                    ->orderBy('event_date', 'ASC')
                     ->orderBy('start_time', 'ASC')
                     ->first();
     }

@@ -7,7 +7,7 @@ use CodeIgniter\Entity\Entity;
 class EventDay extends Entity
 {
     protected $datamap = [];
-    protected $dates   = ['date', 'created_at', 'updated_at'];
+    protected $dates   = ['event_date', 'created_at', 'updated_at'];
     protected $casts   = [
         'id'        => 'integer',
         'event_id'  => 'integer',
@@ -19,7 +19,7 @@ class EventDay extends Entity
      */
     public function getFormattedDate(): string
     {
-        $date = new \DateTime($this->attributes['date']);
+        $date = new \DateTime($this->attributes['event_date']);
         return $date->format('d/m/Y');
     }
 

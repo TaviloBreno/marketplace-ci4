@@ -23,7 +23,7 @@
                 </form>
             </div>
             <div class="col-lg-6 text-center d-none d-lg-block">
-                <img src="https://illustrations.popsy.co/amber/man-at-party.svg" alt="Events" style="max-height: 350px;">
+                <img src="https://undraw.co/api/illustrations/undraw_party_re_nmwj" alt="Events" style="max-height: 350px;" onerror="this.src='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/calendar-event.svg'; this.style.maxHeight='200px';">
             </div>
         </div>
     </div>

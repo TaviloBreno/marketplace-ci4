@@ -12,23 +12,24 @@ use CodeIgniter\Router\RouteCollection;
 
 // Home e Listagem de Eventos
 $routes->get('/', 'PublicController::index');
-$routes->get('events', 'PublicController::events');
-$routes->get('events/(:segment)', 'PublicController::event/$1');
-$routes->get('events/(:segment)/seats/(:num)', 'PublicController::selectSeats/$1/$2');
-$routes->post('events/seats-status', 'PublicController::getSeatsStatus');
+$routes->get('eventos', 'PublicController::events');
+$routes->get('evento/(:segment)', 'PublicController::event/$1');
+$routes->get('evento/(:segment)/assentos/(:num)', 'PublicController::selectSeats/$1/$2');
+$routes->post('eventos/seats-status', 'PublicController::getSeatsStatus');
+$routes->get('busca', 'PublicController::search');
 
-// Carrinho (algumas rotas precisam de autenticação)
-$routes->get('cart', 'CartController::index');
-$routes->post('cart/add', 'CartController::add');
-$routes->post('cart/remove', 'CartController::remove');
-$routes->post('cart/clear', 'CartController::clear');
-$routes->get('cart/count', 'CartController::getCount');
+// Carrinho
+$routes->get('carrinho', 'CartController::index');
+$routes->post('carrinho/adicionar', 'CartController::add');
+$routes->post('carrinho/remover', 'CartController::remove');
+$routes->post('carrinho/limpar', 'CartController::clear');
+$routes->get('carrinho/contador', 'CartController::getCount');
 
 // Webhook do Stripe (não requer autenticação)
 $routes->post('checkout/webhook', 'CheckoutController::webhook');
 
 // Validação de ingresso via QR Code (público)
-$routes->get('tickets/validate/(:segment)', 'TicketController::validateQR/$1');
+$routes->get('ingresso/validar/(:segment)', 'TicketController::validateQR/$1');
 
 // ============================================
 // ROTAS PROTEGIDAS - Requer Autenticação
@@ -38,22 +39,23 @@ $routes->group('', ['filter' => 'session'], function ($routes) {
     
     // Checkout
     $routes->get('checkout', 'CheckoutController::index');
-    $routes->post('checkout/process', 'CheckoutController::process');
-    $routes->get('checkout/success', 'CheckoutController::success');
-    $routes->get('checkout/cancel', 'CheckoutController::cancel');
+    $routes->post('checkout/processar', 'CheckoutController::process');
+    $routes->get('checkout/sucesso', 'CheckoutController::success');
+    $routes->get('checkout/cancelar', 'CheckoutController::cancel');
     
     // Pedidos do usuário
-    $routes->get('orders', 'OrderController::index');
-    $routes->get('orders/(:num)', 'OrderController::show/$1');
-    $routes->get('orders/(:num)/refund', 'OrderController::requestRefund/$1');
-    $routes->post('orders/(:num)/refund', 'OrderController::processRefund/$1');
-    $routes->get('orders/(:num)/download-tickets', 'OrderController::downloadTickets/$1');
+    $routes->get('meus-pedidos', 'OrderController::index');
+    $routes->get('pedido/(:num)', 'OrderController::show/$1');
+    $routes->get('pedido/(:num)/confirmacao', 'CheckoutController::confirmation/$1');
+    $routes->get('pedido/(:num)/reembolso', 'OrderController::requestRefund/$1');
+    $routes->post('pedido/(:num)/reembolso', 'OrderController::processRefund/$1');
+    $routes->get('pedido/(:num)/baixar-ingressos', 'OrderController::downloadTickets/$1');
     
     // Ingressos do usuário
-    $routes->get('tickets', 'TicketController::index');
-    $routes->get('tickets/(:segment)', 'TicketController::show/$1');
-    $routes->get('tickets/(:segment)/print', 'TicketController::print/$1');
-    $routes->get('tickets/(:segment)/download', 'TicketController::download/$1');
+    $routes->get('meus-ingressos', 'TicketController::index');
+    $routes->get('ingresso/(:segment)', 'TicketController::show/$1');
+    $routes->get('ingresso/(:segment)/imprimir', 'TicketController::print/$1');
+    $routes->get('ingresso/(:segment)/baixar', 'TicketController::download/$1');
     
     // Rotas do Organizador
     $routes->group('organizer', function ($routes) {

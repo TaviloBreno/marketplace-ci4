@@ -9,6 +9,7 @@ use App\Models\QueueModel;
 use App\Models\SeatModel;
 use App\Models\SeatBookingModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Database\BaseConnection;
 
 class PublicController extends BaseController
 {
@@ -18,6 +19,7 @@ class PublicController extends BaseController
     protected QueueModel $queueModel;
     protected SeatModel $seatModel;
     protected SeatBookingModel $seatBookingModel;
+    protected BaseConnection $db;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class PublicController extends BaseController
         $this->queueModel = new QueueModel();
         $this->seatModel = new SeatModel();
         $this->seatBookingModel = new SeatBookingModel();
+        $this->db = \Config\Database::connect();
     }
 
     /**
@@ -97,13 +100,13 @@ class PublicController extends BaseController
             $builder->groupStart()
                 ->like('title', $busca)
                 ->orLike('description', $busca)
-                ->orLike('venue', $busca)
+                ->orLike('venue_name', $busca)
                 ->groupEnd();
         }
 
         // Filtro por cidade
         if ($cidade) {
-            $builder->like('city', $cidade);
+            $builder->like('venue_city', $cidade);
         }
 
         // Ordenação
@@ -128,16 +131,16 @@ class PublicController extends BaseController
 
         // Cidades disponíveis para filtro
         $cities = $this->eventModel
-            ->select('city')
+            ->select('venue_city')
             ->where('status', 'published')
-            ->where('city IS NOT NULL')
-            ->groupBy('city')
+            ->where('venue_city IS NOT NULL')
+            ->groupBy('venue_city')
             ->findAll();
 
         return view('public/events/list', [
             'events' => $events,
             'pager' => $pager,
-            'cities' => array_column($cities, 'city'),
+            'cities' => array_column($cities, 'venue_city'),
             'filters' => [
                 'categoria' => $categoria,
                 'busca' => $busca,
@@ -173,17 +176,19 @@ class PublicController extends BaseController
 
         // Contagem de assentos disponíveis por setor
         foreach ($sectors as &$sector) {
-            $totalSeats = $this->seatModel
+            // Total de assentos no setor (query limpa)
+            $totalSeats = $this->db->table('seats')
                 ->join('queues', 'queues.id = seats.queue_id')
                 ->where('queues.sector_id', $sector->id)
-                ->countAllResults(false);
+                ->countAllResults();
             
-            $bookedSeats = $this->seatModel
+            // Assentos já reservados/confirmados (query limpa)
+            $bookedSeats = $this->db->table('seat_bookings')
+                ->join('seats', 'seats.id = seat_bookings.seat_id')
                 ->join('queues', 'queues.id = seats.queue_id')
-                ->join('seat_bookings', 'seat_bookings.seat_id = seats.id')
                 ->where('queues.sector_id', $sector->id)
                 ->where('seat_bookings.status !=', 'cancelled')
-                ->countAllResults(false);
+                ->countAllResults();
             
             $sector->available_seats = $totalSeats - $bookedSeats;
             $sector->total_seats = $totalSeats;
@@ -340,12 +345,12 @@ class PublicController extends BaseController
         }
 
         $events = $this->eventModel
-            ->select('id, title, slug, venue, city, image')
+            ->select('id, title, slug, venue_name, venue_city, image')
             ->where('status', 'published')
             ->groupStart()
                 ->like('title', $term)
-                ->orLike('venue', $term)
-                ->orLike('city', $term)
+                ->orLike('venue_name', $term)
+                ->orLike('venue_city', $term)
             ->groupEnd()
             ->limit(10)
             ->find();
@@ -355,8 +360,8 @@ class PublicController extends BaseController
                 'id' => $event->id,
                 'title' => $event->title,
                 'slug' => $event->slug,
-                'venue' => $event->venue,
-                'city' => $event->city,
+                'venue' => $event->venue_name,
+                'city' => $event->venue_city,
                 'image' => $event->image ? base_url('uploads/events/' . $event->image) : null,
                 'url' => base_url('evento/' . $event->slug)
             ];

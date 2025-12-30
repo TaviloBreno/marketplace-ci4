@@ -241,11 +241,13 @@
 function removeItem(bookingId) {
     if (!confirm('Remover este ingresso do carrinho?')) return;
     
-    fetch(`<?= base_url('api/cart/remove') ?>/${bookingId}`, {
-        method: 'DELETE',
+    fetch('<?= base_url('carrinho/remover') ?>', {
+        method: 'POST',
         headers: {
+            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
-        }
+        },
+        body: JSON.stringify({ booking_id: bookingId })
     })
     .then(r => r.json())
     .then(data => {
@@ -261,9 +263,10 @@ function removeItem(bookingId) {
 function clearCart() {
     if (!confirm('Tem certeza que deseja limpar o carrinho?')) return;
     
-    fetch('<?= base_url('api/cart/clear') ?>', {
-        method: 'DELETE',
+    fetch('<?= base_url('carrinho/limpar') ?>', {
+        method: 'POST',
         headers: {
+            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
         }
     })

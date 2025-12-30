@@ -312,7 +312,7 @@
     <!-- Cart Count Script -->
     <script>
         function updateCartCount() {
-            fetch('<?= base_url('api/cart/count') ?>')
+            fetch('<?= base_url('carrinho/contador') ?>')
                 .then(r => r.json())
                 .then(data => {
                     const badge = document.getElementById('cartCount');

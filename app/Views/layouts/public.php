@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token-name" content="<?= csrf_token() ?>">
+    <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <title><?= $this->renderSection('title') ?> - EventHub</title>
     
     <!-- CSS Base -->
@@ -308,12 +310,12 @@
 
     <!-- JS Base -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url('js/eventhub.js') ?>"></script>
     
     <!-- Cart Count Script -->
     <script>
         function updateCartCount() {
-            fetch('<?= base_url('carrinho/contador') ?>')
-                .then(r => r.json())
+            EventHub.get('<?= base_url('carrinho/contador') ?>')
                 .then(data => {
                     const badge = document.getElementById('cartCount');
                     if (data.count > 0) {
@@ -327,7 +329,7 @@
         }
         
         // Atualizar ao carregar
-        updateCartCount();
+        document.addEventListener('DOMContentLoaded', updateCartCount);
         
         // Atualizar periodicamente
         setInterval(updateCartCount, 30000);

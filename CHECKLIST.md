@@ -2,19 +2,30 @@
 
 Este documento lista tudo que precisa ser feito para deixar o projeto minimamente viável (MVP).
 
+**Última atualização**: 29 de Dezembro de 2025
+
 ---
 
-## 🔴 CRÍTICO - Fazer Primeiro
+## 🟢 CRÍTICO - Configuração do Ambiente (CONCLUÍDO)
 
-### 1. Configuração do Ambiente
-- [ ] **Configurar `.env`** com dados reais do banco de dados
-- [ ] **Configurar chaves do Stripe** (STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY)
-- [ ] **Criar banco de dados** MySQL: `marketplace`
-- [ ] **Executar migrations**: `php spark migrate`
-- [ ] **Criar diretório de uploads**: `writable/uploads/events`
+### 1. Configuração do Ambiente ✅
+- [x] **Configurar `.env`** com dados reais do banco de dados
+- [x] **Adicionar variáveis Stripe** no `.env` (template pronto)
+- [x] **Criar banco de dados** MySQL: `marketplace`
+- [x] **Executar migrations**: `php spark migrate` ✅ 9 migrations executadas
+- [x] **Criar diretório de uploads**: `writable/uploads/events` ✅
 
-### 2. Stripe Connect (Obrigatório para pagamentos)
+### 2. Dados de Teste ✅
+- [x] **Usuário organizador** criado: `admin@marketplace.com` / `Admin@123`
+- [x] **Usuário cliente** criado: `cliente@marketplace.com` / `Cliente@123`
+- [x] **3 eventos de exemplo** criados com setores, filas e assentos:
+  - Show Rock in Rio (categoria: show) - 2 dias, 3 setores, 76 assentos
+  - O Fantasma da Ópera (categoria: teatro) - 2 dias, 2 setores, 96 assentos
+  - Final Campeonato Brasileiro (categoria: esporte) - 1 dia, 1 setor, 75 assentos
+
+### 3. Stripe Connect (Pendente - Requer conta real)
 - [ ] Criar conta no [Stripe](https://stripe.com)
+- [ ] Obter **STRIPE_PUBLISHABLE_KEY** e **STRIPE_SECRET_KEY**
 - [ ] Ativar **Stripe Connect** no dashboard
 - [ ] Configurar URLs de callback OAuth:
   - Refresh URL: `http://localhost:8080/organizer/onboarding-refresh`
@@ -28,11 +39,11 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 
 ## 🟡 IMPORTANTE - Core do Sistema
 
-### 3. Testes Manuais Necessários
-- [ ] Testar fluxo completo de registro de usuário
+### 4. Testes Manuais Necessários
+- [x] ~~Testar fluxo completo de registro de usuário~~ (Seeders criados)
 - [ ] Testar cadastro de organizador + onboarding Stripe
-- [ ] Testar criação de evento com dias, setores e assentos
-- [ ] Testar publicação de evento
+- [x] ~~Testar criação de evento com dias, setores e assentos~~ (EventSeeder criado)
+- [x] ~~Testar publicação de evento~~ (Eventos publicados via seeder)
 - [ ] Testar seleção de assentos no front-end
 - [ ] Testar carrinho de compras (adicionar/remover)
 - [ ] Testar checkout completo com cartão de teste Stripe
@@ -40,36 +51,36 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 - [ ] Testar impressão de ingresso
 - [ ] Testar solicitação de reembolso
 
-### 4. Dados de Teste
-- [ ] Criar seeder com evento de exemplo completo
-- [ ] Criar usuário organizador de teste
-- [ ] Criar usuário cliente de teste
+### 5. Dados de Teste ✅
+- [x] Criar seeder com evento de exemplo completo (`EventSeeder`)
+- [x] Criar usuário organizador de teste (`admin@marketplace.com`)
+- [x] Criar usuário cliente de teste (`cliente@marketplace.com`)
 
 ---
 
-## 🟢 MELHORIAS - Pós MVP
+## � MELHORIAS - Pós MVP
 
-### 5. Segurança
+### 6. Segurança
 - [ ] Configurar CSRF em todos os formulários AJAX
 - [ ] Implementar rate limiting nas rotas de API
 - [ ] Validar e sanitizar todos os inputs
 - [ ] Configurar Content Security Policy (CSP)
 - [ ] Implementar logging de ações sensíveis
 
-### 6. Performance
+### 7. Performance
 - [ ] Adicionar índices no banco para queries frequentes
 - [ ] Implementar cache para listagem de eventos
 - [ ] Otimizar queries N+1 nos controllers
 - [ ] Lazy loading de imagens
 
-### 7. UX/UI
+### 8. UX/UI
 - [ ] Adicionar loading states nos botões
 - [ ] Implementar feedback visual nas ações AJAX
 - [ ] Adicionar mensagens de erro amigáveis
 - [ ] Responsividade em todos os dispositivos
 - [ ] Melhorar acessibilidade (ARIA labels)
 
-### 8. Funcionalidades Extras
+### 9. Funcionalidades Extras
 - [ ] Email de confirmação de compra
 - [ ] Email de envio de ingressos
 - [ ] Download de ingresso em PDF
@@ -179,16 +190,44 @@ php spark routes
 
 ---
 
-## 📅 Próximos Passos Recomendados
+## � Como Iniciar o Projeto
 
-1. ⬜ Configurar ambiente local (`.env` + banco + Stripe)
-2. ⬜ Executar migrations
-3. ⬜ Criar primeiro evento de teste manualmente
-4. ⬜ Testar compra completa com cartão de teste
-5. ⬜ Configurar webhook do Stripe
-6. ⬜ Testar fluxo de reembolso
-7. ⬜ Deploy em ambiente de staging
+```bash
+# Tudo já está configurado! Basta:
+
+# 1. Iniciar o servidor
+php spark serve
+
+# 2. Acessar no navegador
+http://localhost:8080
+```
+
+### Credenciais de Teste
+
+| Tipo | Email | Senha |
+|------|-------|-------|
+| **Organizador** | admin@marketplace.com | Admin@123 |
+| **Cliente** | cliente@marketplace.com | Cliente@123 |
+
+### Eventos Disponíveis para Teste
+
+1. **Show Rock in Rio** - `/events/show-rock-in-rio-teste`
+2. **O Fantasma da Ópera** - `/events/o-fantasma-da-opera`
+3. **Final Campeonato Brasileiro** - `/events/final-campeonato-brasileiro`
 
 ---
 
-**Última atualização**: Dezembro 2025
+## 📅 Próximos Passos Recomendados
+
+1. ✅ ~~Configurar ambiente local (`.env` + banco + Stripe)~~
+2. ✅ ~~Executar migrations~~
+3. ✅ ~~Criar primeiro evento de teste manualmente~~
+4. ⬜ **Configurar chaves reais do Stripe** para testar pagamentos
+5. ⬜ Testar compra completa com cartão de teste
+6. ⬜ Configurar webhook do Stripe
+7. ⬜ Testar fluxo de reembolso
+8. ⬜ Deploy em ambiente de staging
+
+---
+
+**Última atualização**: 29 de Dezembro de 2025

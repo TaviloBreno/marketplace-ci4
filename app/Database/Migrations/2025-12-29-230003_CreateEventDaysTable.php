@@ -20,7 +20,7 @@ class CreateEventDaysTable extends Migration
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'date' => [
+            'event_date' => [
                 'type' => 'DATE',
             ],
             'start_time' => [

@@ -56,12 +56,12 @@ class PublicController extends BaseController
 
         // Próximos eventos (baseado na data)
         $upcomingEvents = $this->eventModel
-            ->select('events.*')
+            ->select('events.*, MIN(event_days.event_date) as next_event_date')
             ->join('event_days', 'event_days.event_id = events.id')
             ->where('events.status', 'published')
             ->where('event_days.event_date >=', date('Y-m-d'))
             ->groupBy('events.id')
-            ->orderBy('event_days.event_date', 'ASC')
+            ->orderBy('next_event_date', 'ASC')
             ->limit(8)
             ->find();
 

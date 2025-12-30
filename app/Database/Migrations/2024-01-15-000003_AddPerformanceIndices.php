@@ -15,100 +15,106 @@ class AddPerformanceIndices extends Migration
     public function up()
     {
         // Índices na tabela events
-        $this->forge->addKey('status', false, false, 'idx_events_status');
-        $this->forge->addKey('user_id', false, false, 'idx_events_user_id');
-        $this->forge->addKey('venue_city', false, false, 'idx_events_venue_city');
-        $this->forge->addKey(['status', 'deleted_at'], false, false, 'idx_events_status_deleted');
-        $this->forge->processIndexes('events');
+        $this->createIndexIfNotExists('events', 'idx_events_status', 'status');
+        $this->createIndexIfNotExists('events', 'idx_events_user_id', 'user_id');
+        $this->createIndexIfNotExists('events', 'idx_events_venue_city', 'venue_city');
         
         // Índices na tabela event_days
-        $this->forge->addKey('event_id', false, false, 'idx_event_days_event_id');
-        $this->forge->addKey('event_date', false, false, 'idx_event_days_event_date');
-        $this->forge->addKey(['event_id', 'event_date'], false, false, 'idx_event_days_event_date_compound');
-        $this->forge->processIndexes('event_days');
+        $this->createIndexIfNotExists('event_days', 'idx_event_days_event_id', 'event_id');
+        $this->createIndexIfNotExists('event_days', 'idx_event_days_event_date', 'event_date');
         
         // Índices na tabela sectors
-        $this->forge->addKey('event_day_id', false, false, 'idx_sectors_event_day_id');
-        $this->forge->processIndexes('sectors');
+        $this->createIndexIfNotExists('sectors', 'idx_sectors_event_id', 'event_id');
         
         // Índices na tabela queues
-        $this->forge->addKey('sector_id', false, false, 'idx_queues_sector_id');
-        $this->forge->processIndexes('queues');
+        $this->createIndexIfNotExists('queues', 'idx_queues_sector_id', 'sector_id');
         
         // Índices na tabela seats
-        $this->forge->addKey('queue_id', false, false, 'idx_seats_queue_id');
-        $this->forge->addKey('status', false, false, 'idx_seats_status');
-        $this->forge->addKey(['queue_id', 'status'], false, false, 'idx_seats_queue_status');
-        $this->forge->processIndexes('seats');
+        $this->createIndexIfNotExists('seats', 'idx_seats_queue_id', 'queue_id');
+        $this->createIndexIfNotExists('seats', 'idx_seats_status', 'status');
         
         // Índices na tabela seat_bookings
-        $this->forge->addKey('seat_id', false, false, 'idx_seat_bookings_seat_id');
-        $this->forge->addKey('user_id', false, false, 'idx_seat_bookings_user_id');
-        $this->forge->addKey('session_id', false, false, 'idx_seat_bookings_session_id');
-        $this->forge->addKey('status', false, false, 'idx_seat_bookings_status');
-        $this->forge->addKey('expires_at', false, false, 'idx_seat_bookings_expires_at');
-        $this->forge->addKey(['status', 'expires_at'], false, false, 'idx_seat_bookings_status_expires');
-        $this->forge->processIndexes('seat_bookings');
+        $this->createIndexIfNotExists('seat_bookings', 'idx_seat_bookings_seat_id', 'seat_id');
+        $this->createIndexIfNotExists('seat_bookings', 'idx_seat_bookings_user_id', 'user_id');
+        $this->createIndexIfNotExists('seat_bookings', 'idx_seat_bookings_session_id', 'session_id');
+        $this->createIndexIfNotExists('seat_bookings', 'idx_seat_bookings_status', 'status');
+        $this->createIndexIfNotExists('seat_bookings', 'idx_seat_bookings_expires_at', 'expires_at');
         
         // Índices na tabela orders
-        $this->forge->addKey('user_id', false, false, 'idx_orders_user_id');
-        $this->forge->addKey('event_id', false, false, 'idx_orders_event_id');
-        $this->forge->addKey('status', false, false, 'idx_orders_status');
-        $this->forge->addKey('created_at', false, false, 'idx_orders_created_at');
-        $this->forge->processIndexes('orders');
+        $this->createIndexIfNotExists('orders', 'idx_orders_user_id', 'user_id');
+        $this->createIndexIfNotExists('orders', 'idx_orders_event_id', 'event_id');
+        $this->createIndexIfNotExists('orders', 'idx_orders_status', 'status');
+        $this->createIndexIfNotExists('orders', 'idx_orders_created_at', 'created_at');
         
         // Índices na tabela tickets
-        $this->forge->addKey('order_id', false, false, 'idx_tickets_order_id');
-        $this->forge->addKey('seat_id', false, false, 'idx_tickets_seat_id');
-        $this->forge->addKey('user_id', false, false, 'idx_tickets_user_id');
-        $this->forge->addKey('ticket_code', false, false, 'idx_tickets_ticket_code');
-        $this->forge->addKey('status', false, false, 'idx_tickets_status');
-        $this->forge->processIndexes('tickets');
+        $this->createIndexIfNotExists('tickets', 'idx_tickets_order_id', 'order_id');
+        $this->createIndexIfNotExists('tickets', 'idx_tickets_seat_booking_id', 'seat_booking_id');
+        $this->createIndexIfNotExists('tickets', 'idx_tickets_ticket_code', 'ticket_code');
+        $this->createIndexIfNotExists('tickets', 'idx_tickets_status', 'status');
     }
 
     public function down()
     {
         // Remover índices da tabela events
-        $this->db->query('ALTER TABLE events DROP INDEX IF EXISTS idx_events_status');
-        $this->db->query('ALTER TABLE events DROP INDEX IF EXISTS idx_events_user_id');
-        $this->db->query('ALTER TABLE events DROP INDEX IF EXISTS idx_events_venue_city');
-        $this->db->query('ALTER TABLE events DROP INDEX IF EXISTS idx_events_status_deleted');
+        $this->dropIndexIfExists('events', 'idx_events_status');
+        $this->dropIndexIfExists('events', 'idx_events_user_id');
+        $this->dropIndexIfExists('events', 'idx_events_venue_city');
         
         // Remover índices da tabela event_days
-        $this->db->query('ALTER TABLE event_days DROP INDEX IF EXISTS idx_event_days_event_id');
-        $this->db->query('ALTER TABLE event_days DROP INDEX IF EXISTS idx_event_days_event_date');
-        $this->db->query('ALTER TABLE event_days DROP INDEX IF EXISTS idx_event_days_event_date_compound');
+        $this->dropIndexIfExists('event_days', 'idx_event_days_event_id');
+        $this->dropIndexIfExists('event_days', 'idx_event_days_event_date');
         
         // Remover índices da tabela sectors
-        $this->db->query('ALTER TABLE sectors DROP INDEX IF EXISTS idx_sectors_event_day_id');
+        $this->dropIndexIfExists('sectors', 'idx_sectors_event_id');
         
         // Remover índices da tabela queues
-        $this->db->query('ALTER TABLE queues DROP INDEX IF EXISTS idx_queues_sector_id');
+        $this->dropIndexIfExists('queues', 'idx_queues_sector_id');
         
         // Remover índices da tabela seats
-        $this->db->query('ALTER TABLE seats DROP INDEX IF EXISTS idx_seats_queue_id');
-        $this->db->query('ALTER TABLE seats DROP INDEX IF EXISTS idx_seats_status');
-        $this->db->query('ALTER TABLE seats DROP INDEX IF EXISTS idx_seats_queue_status');
+        $this->dropIndexIfExists('seats', 'idx_seats_queue_id');
+        $this->dropIndexIfExists('seats', 'idx_seats_status');
         
         // Remover índices da tabela seat_bookings
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_seat_id');
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_user_id');
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_session_id');
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_status');
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_expires_at');
-        $this->db->query('ALTER TABLE seat_bookings DROP INDEX IF EXISTS idx_seat_bookings_status_expires');
+        $this->dropIndexIfExists('seat_bookings', 'idx_seat_bookings_seat_id');
+        $this->dropIndexIfExists('seat_bookings', 'idx_seat_bookings_user_id');
+        $this->dropIndexIfExists('seat_bookings', 'idx_seat_bookings_session_id');
+        $this->dropIndexIfExists('seat_bookings', 'idx_seat_bookings_status');
+        $this->dropIndexIfExists('seat_bookings', 'idx_seat_bookings_expires_at');
         
         // Remover índices da tabela orders
-        $this->db->query('ALTER TABLE orders DROP INDEX IF EXISTS idx_orders_user_id');
-        $this->db->query('ALTER TABLE orders DROP INDEX IF EXISTS idx_orders_event_id');
-        $this->db->query('ALTER TABLE orders DROP INDEX IF EXISTS idx_orders_status');
-        $this->db->query('ALTER TABLE orders DROP INDEX IF EXISTS idx_orders_created_at');
+        $this->dropIndexIfExists('orders', 'idx_orders_user_id');
+        $this->dropIndexIfExists('orders', 'idx_orders_event_id');
+        $this->dropIndexIfExists('orders', 'idx_orders_status');
+        $this->dropIndexIfExists('orders', 'idx_orders_created_at');
         
         // Remover índices da tabela tickets
-        $this->db->query('ALTER TABLE tickets DROP INDEX IF EXISTS idx_tickets_order_id');
-        $this->db->query('ALTER TABLE tickets DROP INDEX IF EXISTS idx_tickets_seat_id');
-        $this->db->query('ALTER TABLE tickets DROP INDEX IF EXISTS idx_tickets_user_id');
-        $this->db->query('ALTER TABLE tickets DROP INDEX IF EXISTS idx_tickets_ticket_code');
-        $this->db->query('ALTER TABLE tickets DROP INDEX IF EXISTS idx_tickets_status');
+        $this->dropIndexIfExists('tickets', 'idx_tickets_order_id');
+        $this->dropIndexIfExists('tickets', 'idx_tickets_seat_booking_id');
+        $this->dropIndexIfExists('tickets', 'idx_tickets_ticket_code');
+        $this->dropIndexIfExists('tickets', 'idx_tickets_status');
+    }
+    
+    /**
+     * Cria um índice se ele não existir
+     */
+    private function createIndexIfNotExists(string $table, string $indexName, string $columns): void
+    {
+        $query = $this->db->query("SHOW INDEX FROM {$table} WHERE Key_name = '{$indexName}'");
+        
+        if ($query->getNumRows() === 0) {
+            $this->db->query("CREATE INDEX {$indexName} ON {$table}({$columns})");
+        }
+    }
+    
+    /**
+     * Remove um índice se ele existir
+     */
+    private function dropIndexIfExists(string $table, string $indexName): void
+    {
+        $query = $this->db->query("SHOW INDEX FROM {$table} WHERE Key_name = '{$indexName}'");
+        
+        if ($query->getNumRows() > 0) {
+            $this->db->query("DROP INDEX {$indexName} ON {$table}");
+        }
     }
 }

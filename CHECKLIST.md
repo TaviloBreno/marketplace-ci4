@@ -37,7 +37,7 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 
 ---
 
-## 🟡 IMPORTANTE - Core do Sistema
+## 🟡 IMPORTANTE - Core do Sistema (CONCLUÍDO)
 
 ### 4. Rotas e URLs ✅
 - [x] **Rotas em português**: `/eventos`, `/carrinho`, `/checkout`, `/meus-pedidos`, `/meus-ingressos`
@@ -56,36 +56,41 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 - [ ] Testar impressão de ingresso
 - [ ] Testar solicitação de reembolso
 
-### 5. Dados de Teste ✅
+### 6. Dados de Teste ✅
 - [x] Criar seeder com evento de exemplo completo (`EventSeeder`)
 - [x] Criar usuário organizador de teste (`admin@marketplace.com`)
 - [x] Criar usuário cliente de teste (`cliente@marketplace.com`)
 
 ---
 
-## � MELHORIAS - Pós MVP
+## 🔵 MELHORIAS PÓS-MVP (IMPLEMENTADO)
 
-### 6. Segurança
-- [ ] Configurar CSRF em todos os formulários AJAX
-- [ ] Implementar rate limiting nas rotas de API
+### 7. Segurança ✅
+- [x] Configurar CSRF em todos os formulários AJAX (`AjaxCsrfFilter`)
+- [x] Implementar rate limiting nas rotas de API (`RateLimitFilter`)
+- [x] Registrar filtros no `Filters.php`
+- [x] Meta tags CSRF nos layouts (`csrf-token`, `csrf-token-name`)
+- [x] Implementar logging de ações sensíveis (`AuditLogger`)
 - [ ] Validar e sanitizar todos os inputs
 - [ ] Configurar Content Security Policy (CSP)
-- [ ] Implementar logging de ações sensíveis
 
-### 7. Performance
-- [ ] Adicionar índices no banco para queries frequentes
-- [ ] Implementar cache para listagem de eventos
+### 8. Performance ✅
+- [x] Migration de índices para queries frequentes (`AddPerformanceIndices`)
+- [x] Implementar cache para eventos (`EventCache`)
 - [ ] Otimizar queries N+1 nos controllers
 - [ ] Lazy loading de imagens
 
-### 8. UX/UI
-- [ ] Adicionar loading states nos botões
-- [ ] Implementar feedback visual nas ações AJAX
-- [ ] Adicionar mensagens de erro amigáveis
+### 9. UX/UI ✅
+- [x] Biblioteca JavaScript utilitária (`eventhub.js`)
+  - Loading states automáticos em botões
+  - Sistema de notificações toast
+  - Modal de confirmação
+  - AJAX com CSRF automático
+  - Formatadores de moeda e data
 - [ ] Responsividade em todos os dispositivos
 - [ ] Melhorar acessibilidade (ARIA labels)
 
-### 9. Funcionalidades Extras
+### 10. Funcionalidades Extras (Futuro)
 - [ ] Email de confirmação de compra
 - [ ] Email de envio de ingressos
 - [ ] Download de ingresso em PDF
@@ -93,6 +98,32 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 - [ ] Dashboard com gráficos para organizador
 - [ ] Sistema de avaliação de eventos
 - [ ] Cupons de desconto
+
+---
+
+## 📁 Novos Arquivos Criados (Pós-MVP)
+
+### Filtros de Segurança
+| Arquivo | Descrição |
+|---------|-----------|
+| `app/Filters/RateLimitFilter.php` | Rate limiting (60 req/min) |
+| `app/Filters/AjaxCsrfFilter.php` | CSRF para requisições AJAX |
+
+### Bibliotecas
+| Arquivo | Descrição |
+|---------|-----------|
+| `app/Libraries/EventCache.php` | Cache de eventos e listagens |
+| `app/Libraries/AuditLogger.php` | Log de ações sensíveis |
+
+### JavaScript
+| Arquivo | Descrição |
+|---------|-----------|
+| `public/js/eventhub.js` | Utilitários JS (AJAX, loading, toast) |
+
+### Migrations
+| Arquivo | Descrição |
+|---------|-----------|
+| `AddPerformanceIndices.php` | Índices para performance |
 
 ---
 
@@ -154,6 +185,7 @@ Este documento lista tudo que precisa ser feito para deixar o projeto minimament
 | `CreateSeatBookingsTable` | ✅ | Tabela reservas |
 | `CreateOrdersTable` | ✅ | Tabela pedidos |
 | `CreateTicketsTable` | ✅ | Tabela ingressos |
+| `AddPerformanceIndices` | ✅ | Índices de performance |
 
 ---
 
@@ -171,6 +203,7 @@ php spark migrate:rollback
 
 # Executar seeders
 php spark db:seed UserSeeder
+php spark db:seed EventSeeder
 
 # Limpar cache
 php spark cache:clear
@@ -195,15 +228,18 @@ php spark routes
 
 ---
 
-## � Como Iniciar o Projeto
+## 📍 Como Iniciar o Projeto
 
 ```bash
 # Tudo já está configurado! Basta:
 
-# 1. Iniciar o servidor
+# 1. Executar a nova migration de índices (opcional, melhora performance)
+php spark migrate
+
+# 2. Iniciar o servidor
 php spark serve
 
-# 2. Acessar no navegador
+# 3. Acessar no navegador
 http://localhost:8080
 ```
 
@@ -216,9 +252,9 @@ http://localhost:8080
 
 ### Eventos Disponíveis para Teste
 
-1. **Show Rock in Rio** - `/events/show-rock-in-rio-teste`
-2. **O Fantasma da Ópera** - `/events/o-fantasma-da-opera`
-3. **Final Campeonato Brasileiro** - `/events/final-campeonato-brasileiro`
+1. **Show Rock in Rio** - `/eventos/show-rock-in-rio-teste`
+2. **O Fantasma da Ópera** - `/eventos/o-fantasma-da-opera`
+3. **Final Campeonato Brasileiro** - `/eventos/final-campeonato-brasileiro`
 
 ---
 
@@ -227,11 +263,87 @@ http://localhost:8080
 1. ✅ ~~Configurar ambiente local (`.env` + banco + Stripe)~~
 2. ✅ ~~Executar migrations~~
 3. ✅ ~~Criar primeiro evento de teste manualmente~~
-4. ⬜ **Configurar chaves reais do Stripe** para testar pagamentos
-5. ⬜ Testar compra completa com cartão de teste
-6. ⬜ Configurar webhook do Stripe
-7. ⬜ Testar fluxo de reembolso
-8. ⬜ Deploy em ambiente de staging
+4. ✅ ~~Implementar melhorias de segurança (CSRF, rate limiting)~~
+5. ✅ ~~Implementar melhorias de performance (índices, cache)~~
+6. ✅ ~~Implementar melhorias de UX (loading states, toasts)~~
+7. ⬜ **Configurar chaves reais do Stripe** para testar pagamentos
+8. ⬜ Testar compra completa com cartão de teste
+9. ⬜ Configurar webhook do Stripe
+10. ⬜ Testar fluxo de reembolso
+11. ⬜ Deploy em ambiente de staging
+
+---
+
+## 📖 Como Usar os Novos Recursos
+
+### Loading States em Botões
+```html
+<!-- Adicionar data-loading-text para ativar loading automático -->
+<button type="submit" data-loading-text="Processando...">
+    Finalizar Compra
+</button>
+```
+
+### Notificações Toast
+```javascript
+// Exibir notificações
+EventHub.showNotification('Operação realizada com sucesso!', 'success');
+EventHub.showNotification('Erro ao processar', 'error');
+EventHub.showNotification('Atenção!', 'warning');
+```
+
+### Requisições AJAX com CSRF
+```javascript
+// POST com CSRF automático
+const result = await EventHub.post('/carrinho/adicionar', {
+    seat_id: 123
+});
+
+// GET
+const data = await EventHub.get('/carrinho/contador');
+```
+
+### Modal de Confirmação
+```javascript
+const confirmed = await EventHub.confirm('Deseja remover este item?', {
+    title: 'Confirmar Remoção',
+    confirmText: 'Sim, Remover',
+    confirmClass: 'btn-danger'
+});
+
+if (confirmed) {
+    // executar ação
+}
+```
+
+### Audit Logger (Backend)
+```php
+// Usar em controllers/services
+$logger = new \App\Libraries\AuditLogger();
+
+// Log de compra
+$logger->logTicketPurchase($orderId, $eventId, $amount, $tickets);
+
+// Log de reembolso
+$logger->logRefundRequest($orderId, $amount, 'motivo');
+
+// Log de pagamento
+$logger->logPaymentSuccess($orderId, $amount, $transactionId);
+```
+
+### Event Cache (Backend)
+```php
+// Usar em controllers
+$cache = new \App\Libraries\EventCache();
+
+// Obter evento com cache
+$event = $cache->getEvent($eventId, function() use ($eventId) {
+    return $this->eventModel->find($eventId);
+});
+
+// Invalidar cache após alteração
+$cache->invalidateEvent($eventId);
+```
 
 ---
 

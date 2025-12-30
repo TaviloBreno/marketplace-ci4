@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use CodeIgniter\Filters\FilterInterface;
+use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -28,6 +29,9 @@ class RateLimitFilter implements FilterInterface
      */
     protected string $cachePrefix = 'rate_limit_';
 
+    /**
+     * @param IncomingRequest $request
+     */
     public function before(RequestInterface $request, $arguments = null)
     {
         // Configurar limites personalizados baseado nos argumentos

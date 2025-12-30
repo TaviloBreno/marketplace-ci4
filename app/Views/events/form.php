@@ -178,7 +178,7 @@
                                         <div class="col-md-4">
                                             <label class="form-label">Data *</label>
                                             <input type="date" class="form-control" name="event_dates[]" 
-                                                   value="<?= $day->date ?>" required>
+                                                   value="<?= $day->event_date ?>" required>
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">Horário *</label>

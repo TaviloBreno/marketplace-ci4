@@ -302,7 +302,7 @@ class Event extends BaseController
         foreach ($datesInput as $index => $date) {
             if (!empty($date)) {
                 $days[] = [
-                    'date'       => $date,
+                    'event_date' => $date,
                     'start_time' => $timesInput[$index] ?? '19:00',
                     'doors_open' => $doorsInput[$index] ?? null,
                     'is_active'  => 1,

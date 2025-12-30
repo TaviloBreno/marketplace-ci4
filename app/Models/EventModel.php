@@ -118,10 +118,10 @@ class EventModel extends Model
     public function findUpcoming(int $limit = 10)
     {
         $builder = $this->db->table('events e');
-        $builder->select('e.*, MIN(ed.date) as next_date');
+        $builder->select('e.*, MIN(ed.event_date) as next_date');
         $builder->join('event_days ed', 'ed.event_id = e.id');
         $builder->where('e.status', 'published');
-        $builder->where('ed.date >=', date('Y-m-d'));
+        $builder->where('ed.event_date >=', date('Y-m-d'));
         $builder->where('ed.is_active', 1);
         $builder->groupBy('e.id');
         $builder->orderBy('next_date', 'ASC');

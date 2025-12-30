@@ -226,8 +226,18 @@ class CartController extends BaseController
     /**
      * API: Remover item do carrinho
      */
-    public function remove(int $bookingId): ResponseInterface
+    public function remove(): ResponseInterface
     {
+        $json = $this->request->getJSON(true);
+        $bookingId = $json['booking_id'] ?? $this->request->getPost('booking_id');
+        
+        if (!$bookingId) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ID do item não informado'
+            ])->setStatusCode(400);
+        }
+        
         $cartItems = $this->getCartItems();
         $found = false;
         
@@ -290,7 +300,7 @@ class CartController extends BaseController
     /**
      * API: Obter contagem do carrinho
      */
-    public function count(): ResponseInterface
+    public function getCount(): ResponseInterface
     {
         $this->cleanupExpiredItems();
         $cartItems = $this->getCartItems();

@@ -91,7 +91,7 @@ class OrderModel extends Model
     {
         $builder = $this->db->table('orders o');
         $builder->select('o.*, e.title as event_title, e.slug as event_slug, e.image as event_image');
-        $builder->select('ed.date as event_date, ed.start_time');
+        $builder->select('ed.event_date, ed.start_time');
         $builder->join('events e', 'e.id = o.event_id');
         $builder->join('event_days ed', 'ed.id = o.event_day_id');
         $builder->where('o.user_id', $userId);

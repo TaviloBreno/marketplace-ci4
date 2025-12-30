@@ -150,7 +150,7 @@ class SeatBookingModel extends Model
         $builder->select('q.name as queue_name');
         $builder->select('sec.name as sector_name, sec.color as sector_color');
         $builder->select('e.title as event_title, e.slug as event_slug');
-        $builder->select('ed.date as event_date, ed.start_time');
+        $builder->select('ed.event_date, ed.start_time');
         $builder->join('seats s', 's.id = sb.seat_id');
         $builder->join('queues q', 'q.id = s.queue_id');
         $builder->join('sectors sec', 'sec.id = q.sector_id');
